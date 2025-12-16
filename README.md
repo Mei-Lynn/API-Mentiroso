@@ -1,6 +1,6 @@
 Clases Servidor:
 - Main
-	. Partidas [List(Partida)]
+	. Partidas [Map(UUID, Partida)]
 	- Partida		
 		* ID [UUID]
 		* Baraja [List(Int)]
@@ -43,7 +43,8 @@ API:
 	- Provee:
 		+ La jugada anterior
 	- Recibe:
-		+ Respuesta si el jugador cree que la jugada es mentira
+		+ El jugador que la solicita
+		+ La ID de la sala del jugador
 
 - Endpoint 4 "Subir Mano":
 	- Provee:
