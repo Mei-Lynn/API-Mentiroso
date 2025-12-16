@@ -13,19 +13,16 @@ public class Jugador implements Serializable{
 	private String nombre;
 	private ArrayList<Integer> mano; 
 	private Jugada ultimaJugada;
-	private Jugador jugadorActual;
-	private boolean aceptaJugadores;
 	
 	
-	public Jugador(int vecesJugadas, String nombre, ArrayList<Integer> mano, Jugada ultimaJugada, Jugador jugadorActual,
-			boolean aceptaJugadores) {
+	
+	public Jugador(int vecesJugadas, String nombre, ArrayList<Integer> mano, Jugada ultimaJugada) {
 		super();
 		this.vecesJugadas = vecesJugadas;
 		this.nombre = nombre;
 		this.mano = mano;
 		this.ultimaJugada = ultimaJugada;
-		this.jugadorActual = jugadorActual;
-		this.aceptaJugadores = aceptaJugadores;
+		
 	}
 
 
@@ -74,24 +71,7 @@ public class Jugador implements Serializable{
 	}
 
 
-	public Jugador getJugadorActual() {
-		return jugadorActual;
-	}
 
-
-	public void setJugadorActual(Jugador jugadorActual) {
-		this.jugadorActual = jugadorActual;
-	}
-
-
-	public boolean isAceptaJugadores() {
-		return aceptaJugadores;
-	}
-
-
-	public void setAceptaJugadores(boolean aceptaJugadores) {
-		this.aceptaJugadores = aceptaJugadores;
-	}
 	
 	
 	
