@@ -27,6 +27,14 @@ public class Jugador implements Serializable{
 	
 
 
+	public Jugador(int vecesJugadas, String nombre) {
+		super();
+		this.vecesJugadas = vecesJugadas;
+		this.nombre = nombre;
+	}
+
+
+
 	public Jugador(int vecesJugadas, String nombre, ArrayList<Integer> mano) {
 		super();
 		this.vecesJugadas = vecesJugadas;
