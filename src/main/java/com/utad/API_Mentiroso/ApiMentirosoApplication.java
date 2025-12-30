@@ -15,7 +15,7 @@ public class ApiMentirosoApplication {
 	UUID idSala = UUID.randomUUID();
 	static HashMap<UUID, Partida> partidas;
 	// String idStr = idSala.toString();
-
+	
 	public static void main(String[] args) {
 		partidas = new HashMap<>();
 
