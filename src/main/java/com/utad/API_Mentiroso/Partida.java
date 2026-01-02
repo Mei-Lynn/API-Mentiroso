@@ -122,7 +122,7 @@ public class Partida {
 		if (baraja.size() > 4) {
 			for (int i = 0; i < 5; i++) {
 				int numeroAleatorio = (int) (Math.round(Math.random() * (baraja.size() - 1)));
-				mano.set(i, baraja.get(numeroAleatorio));
+				mano.add(baraja.get(numeroAleatorio));
 				baraja.remove(mano.get(i));
 			}
 			return mano;
