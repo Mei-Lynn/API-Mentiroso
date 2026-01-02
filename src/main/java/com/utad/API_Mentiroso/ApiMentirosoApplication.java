@@ -64,7 +64,7 @@ public class ApiMentirosoApplication {
         Partida partida = partidas.get(id);
 
         // No existe la partida
-        if (partida == null || !partida.estaLlena()) {
+        if (partida == null || partida.estaLlena()) {
             response.put("ok", false);
             return response;
         }
