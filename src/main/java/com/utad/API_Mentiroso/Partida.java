@@ -107,6 +107,25 @@ public class Partida {
 
 	}
 
+	public Jugador findPlayerByUsername(String usr) {
+        for (Jugador jugador : jugadores) {
+            if (jugador.getNombre().equals(usr)) {
+                return jugador;
+            }
+        }
+		return null;
+	}
+
+	public Boolean subirJugada(Jugador player, Jugada jugada) {
+		jugadores.get(jugadores.indexOf(player)).jugar(jugada);
+		try {
+			jugadorActual = jugadores.get(jugadores.indexOf(player) + 1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			jugadorActual = jugadores.get(0);
+		}
+		return true;
+	}
+
 	public ArrayList<Integer> pedirMano() {
 
 		ArrayList<Integer> mano = new ArrayList<Integer>();

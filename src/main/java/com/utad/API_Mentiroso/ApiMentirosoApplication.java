@@ -87,39 +87,79 @@ public class ApiMentirosoApplication {
 
     /**
      * Endpoint 3: anterior jugada Recibe... - el nombre del jugador que la está
-     * llamando - ID de la partida Envía la jugada anterior (t)
+     * llamando - ID de la partida
+     *
+     * Envía la jugada anterior del jugador anterior al recibido o null si falla
      *
      * @return
      */
-    public Jugada JugadaAnterior(@RequestParam(value = "gameID", defaultValue = "") String gameID,
-            @RequestParam(value = "username", defaultValue = "") String name) {
+    public Jugada JugadaAnterior(
+            @RequestParam(value = "gameID", defaultValue = "") String gameID,
+            @RequestParam(value = "username", defaultValue = "") String name
+    ) {
         // Localizar la id del juego mediante su ID
-        if (name.isEmpty()) {
+        if (name.isEmpty() || gameID.isEmpty()) {
             return null;
         } else {
             Partida myGame = partidas.get(UUID.fromString(name));
 
             // Encontrar al jugador dado
             ArrayList<Jugador> jugadores = myGame.getJugadores();
-            Jugador target = null;
-            for (Jugador jugador : jugadores) {
-                if (jugador.getNombre().equals(name)) {
-                    target = jugador;
-                }
-            }
+            Jugador target = myGame.findPlayerByUsername(name);
 
             if (target != null) {
                 // Localizar a su anterior
                 // y devolvemos su jugada anterior
-				try {
-					return jugadores.get(jugadores.indexOf(target) - 1).getUltimaJugada();
-				} catch (ArrayIndexOutOfBoundsException e) {
-					return jugadores.get(jugadores.size()).getUltimaJugada();
-				}
+                try {
+                    return jugadores.get(jugadores.indexOf(target) - 1).getUltimaJugada();
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return jugadores.get(jugadores.size()).getUltimaJugada();
+                }
+            } else {
+                return null;
             }
-			else {
-				return null;
-			}
         }
+    }
+
+    /**
+     * Endpoint 4: Subir mano Recibe... - ID de la partida - el nombre del
+     * jugador - el nombre de la jugada - el primer numero de la jugada
+     * (obligatorio) - el segundo numero de la jugada (opcional)
+     *
+     * devuelve un mensaje de texto con el resultado
+     */
+    public String subirMano(
+            @RequestParam(value = "gameID", defaultValue = "") String gameID,
+            @RequestParam(value = "username", defaultValue = "") String name,
+            @RequestParam(value = "play", defaultValue = "") String play,
+            @RequestParam(value = "n1", defaultValue = "") String n1,
+            @RequestParam(value = "n2", defaultValue = "0") String n2
+    ) {
+        if (name.isEmpty() || gameID.isEmpty()) {
+            return "Error de entrada";
+        } else {
+            Partida myGame = partidas.get(UUID.fromString(name));
+            Jugador target = myGame.findPlayerByUsername(name);
+
+            if (myGame.getJugadorActual() == target) {
+                // Encontrar al jugador dado
+                ArrayList<Integer> hand = target.getMano();
+
+                Jugada jugada = new Jugada();
+                try {
+                    jugada.setPrimerNumero(Integer.parseInt(n1));
+                    jugada.setSegundoNumero(Integer.parseInt(n2));
+                } catch (NumberFormatException e) {
+                    return "Error de entrada";
+                }
+                jugada.jugadaElegida(play);
+
+                return "Mano subida";
+
+            } else {
+                return "No es el turno de este jugador";
+            }
+        }
+        //return false;
     }
 }

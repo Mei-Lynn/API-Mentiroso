@@ -137,6 +137,10 @@ public class Jugador implements Serializable{
 		this.ultimaJugada.setSegundoNumero(segundoNumero);
 	}
 	
+	public void jugar(Jugada jugada) {
+		this.ultimaJugada = jugada;
+		this.vecesJugadas++;
+	}
 	
 	
 	
