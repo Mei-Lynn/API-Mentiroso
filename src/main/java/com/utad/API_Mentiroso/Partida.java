@@ -5,6 +5,7 @@
 package com.utad.API_Mentiroso;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
 public class Partida {
@@ -117,11 +118,11 @@ public class Partida {
 	}
 
 	public ArrayList<Integer> pedirMano() {
-
+		Random rng = new Random();
 		ArrayList<Integer> mano = new ArrayList<Integer>();
 		if (baraja.size() > 4) {
 			for (int i = 0; i < 5; i++) {
-				int numeroAleatorio = (int) (Math.round(Math.random() * (baraja.size() - 1)));
+				int numeroAleatorio = rng.nextInt(baraja.size() - 1);
 				mano.add(baraja.get(numeroAleatorio));
 				baraja.remove(mano.get(i));
 			}
