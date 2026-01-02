@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public class Partida {
 	private UUID idSala = UUID.randomUUID();
-	private ArrayList<Integer> baraja = new ArrayList<Integer>();
-	private ArrayList<Jugador> jugadores = new ArrayList<Jugador>();
+	private ArrayList<Integer> baraja = new ArrayList<>();
+	private ArrayList<Jugador> jugadores = new ArrayList<>();
 	private Jugador jugadorActual;
 	private Boolean aceptaJugadores;
 
@@ -51,6 +51,11 @@ public class Partida {
 				contador++;
 			}
 		}
+	}
+
+	public Partida(UUID id) {
+		this.idSala = id;
+		this.aceptaJugadores = true;
 	}
 
 	public UUID getIdSala() {
@@ -118,4 +123,7 @@ public class Partida {
 
 	}
 
+	public boolean estaLlena() {
+		return (jugadores.size() >= 10);
+	}
 }

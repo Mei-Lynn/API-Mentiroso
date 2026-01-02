@@ -1,5 +1,6 @@
 package com.utad.API_Mentiroso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -35,10 +36,10 @@ public class ApiMentirosoApplication {
 		Jugador jugador = new Jugador(username);
 
 		// Repartir mano
-		jugador.setMano(partida.darMano());
+		jugador.setMano(partida.pedirMano());
 
 		// Añadir jugador a la partida
-		partida.getJugadores().add(jugador);
+		partida.anadirJugador(jugador);
 
 		// Guardar partida
 		partidas.put(salaID, partida);
@@ -69,10 +70,14 @@ public class ApiMentirosoApplication {
 
 		// Crear jugador
 		Jugador jugador = new Jugador(username);
-		jugador.setMano(partida.darMano());
+		ArrayList<Integer> newHand = partida.pedirMano();
+		if (newHand == null) {
+			jugador.setMano(newHand);
+		}
+		
 
 		// Añadir a la partida
-		partida.getJugadores().add(jugador);
+		partida.anadirJugador(jugador);
 
 		response.put("ok", true);
 		response.put("mano", jugador.getMano());
@@ -96,6 +101,6 @@ public class ApiMentirosoApplication {
 		// Localizar a su anterior
 
 		// devolvemos su jugada anterior
-		return;
+		return null;
 	}
 }
