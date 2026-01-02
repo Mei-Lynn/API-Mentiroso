@@ -53,28 +53,28 @@ public class Jugada {
 	}
 
 	public Jugada jugadaElegida(String nombreJugada) {
-		switch (nombreJugada) {
-		case "Carta Alta":
+		switch (nombreJugada.toLowerCase()) {
+		case "carta alta":
 			this.setNombre(nombreJugada);
 			this.setEsVerdad(comprobarCartaAlta(primerNumero));
 			break;
-		case "Pareja":
+		case "pareja":
 			this.setNombre(nombreJugada);
 			this.setEsVerdad(comprobarPareja(primerNumero));
 			break;
-		case "Trio":
+		case "trio":
 			this.setNombre(nombreJugada);
 			this.setEsVerdad(comprobarTrio(primerNumero));
 			break;
-		case "Doble Pareja":
+		case "doble pareja":
 			this.setNombre(nombreJugada);
 			this.setEsVerdad(comprobarDoblePareja(primerNumero, segundoNumero));
 			break;
-		case "Full":
+		case "full":
 			this.setNombre(nombreJugada);
 			this.setEsVerdad(comprobarFull(primerNumero, segundoNumero));
 			break;
-		case "Poker":
+		case "poker":
 			this.setNombre(nombreJugada);
 			this.setEsVerdad(comprobarPoker(primerNumero));
 			break;

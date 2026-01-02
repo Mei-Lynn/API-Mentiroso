@@ -49,6 +49,9 @@ public class ApiMentirosoApplication {
         response.put("salaID", salaID.toString());
         response.put("mano", jugador.getMano());
 
+        partidas.keySet().forEach((uuid) -> {
+            System.out.println("Partida encontrada: " + uuid);
+        });
         return response;
     }
 
@@ -65,22 +68,38 @@ public class ApiMentirosoApplication {
 
         // No existe la partida
         if (partida == null || partida.estaLlena()) {
-            response.put("ok", false);
+            response.put("partida", false);
             return response;
         }
 
-        // Crear jugador
-        Jugador jugador = new Jugador(username);
-        ArrayList<Integer> newHand = partida.pedirMano();
-        if (newHand == null) {
-            jugador.setMano(newHand);
+        if (partida.getAceptaJugadores()) {
+            // Encontrar al jugador dado
+            ArrayList<Jugador> jugadores = partida.getJugadores();
+            Jugador jugador = partida.findPlayerByUsername(username);
+
+            if (jugador == null) {
+                // Crear jugador
+                jugador = new Jugador(username);
+                ArrayList<Integer> newHand = partida.pedirMano();
+                if (newHand != null) {
+                    jugador.setMano(newHand);
+                    // Añadir a la partida
+                    partida.anadirJugador(jugador);
+                    response.put("partida", true);
+                    response.put("mano", jugador.getMano());
+                } else {
+                    response.put("partida", true);
+                    response.put("mano", null);
+                }
+            } else {
+                response.put("partida", true);
+                response.put("error", "Jugador ya existente");
+            }
+
+        } else {
+            response.put("partida", true);
+            response.put("error", "La partida no acepta nuevos jugadores");
         }
-
-        // Añadir a la partida
-        partida.anadirJugador(jugador);
-
-        response.put("ok", true);
-        response.put("mano", jugador.getMano());
 
         return response;
     }
@@ -93,7 +112,7 @@ public class ApiMentirosoApplication {
      *
      * @return
      */
-	@GetMapping("/anterior")
+    @GetMapping("/anterior")
     public Jugada JugadaAnterior(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name
@@ -102,7 +121,7 @@ public class ApiMentirosoApplication {
         if (name.isEmpty() || gameID.isEmpty()) {
             return null;
         } else {
-            Partida myGame = partidas.get(UUID.fromString(name));
+            Partida myGame = partidas.get(UUID.fromString(gameID));
 
             // Encontrar al jugador dado
             ArrayList<Jugador> jugadores = myGame.getJugadores();
@@ -113,8 +132,8 @@ public class ApiMentirosoApplication {
                 // y devolvemos su jugada anterior
                 try {
                     return jugadores.get(jugadores.indexOf(target) - 1).getUltimaJugada();
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    return jugadores.get(jugadores.size()).getUltimaJugada();
+                } catch (IndexOutOfBoundsException e) {
+                    return jugadores.get(jugadores.size() - 1).getUltimaJugada();
                 }
             } else {
                 return null;
@@ -129,7 +148,7 @@ public class ApiMentirosoApplication {
      *
      * devuelve un mensaje de texto con el resultado
      */
-	@GetMapping("/subir")	
+    @GetMapping("/subir")
     public String subirMano(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name,
@@ -137,30 +156,41 @@ public class ApiMentirosoApplication {
             @RequestParam(value = "n1", defaultValue = "") String n1,
             @RequestParam(value = "n2", defaultValue = "0") String n2
     ) {
+        System.out.println("Peticion de subir mano recibida:");
+        System.out.println("ID: " + gameID);
+        System.out.println("USR: " + name);
+        System.out.println(play + " de " + n1 + " " + n2);
         if (name.isEmpty() || gameID.isEmpty()) {
-            return "Error de entrada";
+            return "Error de entrada [Partida/Usuario]";
         } else {
-            Partida myGame = partidas.get(UUID.fromString(name));
+            Partida myGame = partidas.get(UUID.fromString(gameID));
             Jugador target = myGame.findPlayerByUsername(name);
+            if (myGame.getJugadores().size() > 1) {
+                if (myGame.getJugadorActual() == target) {
+                    // Encontrar al jugador dado
+                    ArrayList<Integer> hand = target.getMano();
 
-            if (myGame.getJugadorActual() == target) {
-                // Encontrar al jugador dado
-                ArrayList<Integer> hand = target.getMano();
+                    Jugada jugada = new Jugada();
+                    jugada.setCartasJugadas(hand);
+                    try {
+                        jugada.setPrimerNumero(Integer.parseInt(n1));
+                        jugada.setSegundoNumero(Integer.parseInt(n2));
+                    } catch (NumberFormatException e) {
+                        return "Error de entrada en las cartas";
+                    }
+                    jugada.jugadaElegida(play);
 
-                Jugada jugada = new Jugada();
-                try {
-                    jugada.setPrimerNumero(Integer.parseInt(n1));
-                    jugada.setSegundoNumero(Integer.parseInt(n2));
-                } catch (NumberFormatException e) {
-                    return "Error de entrada";
+                    myGame.subirJugada(target, jugada);
+
+                    return "Mano subida";
+
+                } else {
+                    return "No es el turno de este jugador";
                 }
-                jugada.jugadaElegida(play);
-
-                return "Mano subida";
-
             } else {
-                return "No es el turno de este jugador";
+                return "Espera a que otros jugadores se unan";
             }
+
         }
         //return false;
     }

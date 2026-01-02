@@ -91,6 +91,9 @@ public class Partida {
 
 	public void anadirJugador(Jugador jugador) {
 		jugadores.add(jugador);
+		if (jugadorActual == null) {
+			jugadorActual = jugador;
+		}
 	}
 
 	public void eliminarJugador(Jugador jugador) {
@@ -111,7 +114,8 @@ public class Partida {
 		jugadores.get(jugadores.indexOf(player)).jugar(jugada);
 		try {
 			jugadorActual = jugadores.get(jugadores.indexOf(player) + 1);
-		} catch (ArrayIndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {
+			aceptaJugadores = false;
 			jugadorActual = jugadores.get(0);
 		}
 		return true;
