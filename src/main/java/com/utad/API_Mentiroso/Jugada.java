@@ -20,11 +20,11 @@ public class Jugada {
 		this.esVerdad = esVerdad;
 	}
 
-	public ArrayList<Integer> getMano() {
+	public ArrayList<Integer> getCartasJugadas() {
 		return mano;
 	}
 
-	public void setMano(ArrayList<Integer> mano) {
+	public void setCartasJugadas(ArrayList<Integer> mano) {
 		this.mano = mano;
 	}
 
