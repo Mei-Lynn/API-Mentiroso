@@ -16,13 +16,13 @@ public class Partida {
 	private Boolean aceptaJugadores;
 
 	public Partida() {
-		llenarBaraja();	
+		llenarBaraja();
 	}
 
 	public Partida(UUID idSala, ArrayList<Jugador> jugadores, Jugador jugadorActual) {
 		super();
 		this.idSala = idSala;
-		llenarBaraja();	
+		llenarBaraja();
 		this.jugadores = jugadores;
 		this.jugadorActual = jugadorActual;
 		this.aceptaJugadores = true;
@@ -32,13 +32,13 @@ public class Partida {
 		jugadores.add(jugador);
 		jugadorActual = jugador;
 		aceptaJugadores = true;
-		llenarBaraja();	
+		llenarBaraja();
 	}
 
 	public Partida(UUID id) {
 		this.idSala = id;
 		this.aceptaJugadores = true;
-		llenarBaraja();	
+		llenarBaraja();
 	}
 
 	private void llenarBaraja() {
@@ -99,11 +99,11 @@ public class Partida {
 	}
 
 	public Jugador findPlayerByUsername(String usr) {
-        for (Jugador jugador : jugadores) {
-            if (jugador.getNombre().equals(usr)) {
-                return jugador;
-            }
-        }
+		for (Jugador jugador : jugadores) {
+			if (jugador.getNombre().equals(usr)) {
+				return jugador;
+			}
+		}
 		return null;
 	}
 
