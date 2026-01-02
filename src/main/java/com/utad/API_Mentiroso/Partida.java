@@ -56,6 +56,13 @@ public class Partida {
 	public Partida(UUID id) {
 		this.idSala = id;
 		this.aceptaJugadores = true;
+		int contador = 0;
+		for (int i = 0; i < 4; i++) {
+			for (int f = 1; f <= 13; f++) {
+				baraja.set(contador, f);
+				contador++;
+			}
+		}
 	}
 
 	public UUID getIdSala() {

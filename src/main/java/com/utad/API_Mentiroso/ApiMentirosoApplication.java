@@ -93,6 +93,7 @@ public class ApiMentirosoApplication {
      *
      * @return
      */
+	@GetMapping("/anterior")
     public Jugada JugadaAnterior(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name
@@ -128,6 +129,7 @@ public class ApiMentirosoApplication {
      *
      * devuelve un mensaje de texto con el resultado
      */
+	@GetMapping("/subir")	
     public String subirMano(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name,
