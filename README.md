@@ -16,6 +16,15 @@ Clases Servidor:
 				+ Nombre [String] //Ej.: Pareja, Full...
 				+ Numero1 [Int] // Para todas las manos
 				+ Numero2 [Int] // Para full house y doble pareja
+  				-> Métodos:
+	  				+ Getters y Setters de los atributos
+   					+ jugadaElegida (String nombreJugada) : Jugada.
+      				+ comprobarCartaAlata (int numero) : boolean.
+          			+ comprobarPareja (int numero) : boolean.
+            		+ comprobarTrio (int numero) : boolean.
+           			+ comprobarDoblePareja (int numero1, int numero2) : boolean.
+           			+ comprobarFull (int numero1, int numero2) : boolean.
+ 					+ comprobarPoker (int numero) : boolean.
 		* JugadorActual [Jugador]
   		* AceptaJugadores [Boolean] //Atributo calculado
 
