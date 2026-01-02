@@ -100,16 +100,26 @@ public class ApiMentirosoApplication {
             Partida myGame = partidas.get(UUID.fromString(name));
 
             // Encontrar al jugador dado
-			ArrayList<Jugador> jugadores = myGame.getJugadores();
-			Jugador target = null;
-			for (Jugador jugador : jugadores) {
-				if (jugador.getNombre().equals(name)) {
-					target = jugador;
+            ArrayList<Jugador> jugadores = myGame.getJugadores();
+            Jugador target = null;
+            for (Jugador jugador : jugadores) {
+                if (jugador.getNombre().equals(name)) {
+                    target = jugador;
+                }
+            }
+
+            if (target != null) {
+                // Localizar a su anterior
+                // y devolvemos su jugada anterior
+				try {
+					return jugadores.get(jugadores.indexOf(target) - 1).getUltimaJugada();
+				} catch (ArrayIndexOutOfBoundsException e) {
+					return jugadores.get(jugadores.size()).getUltimaJugada();
 				}
+            }
+			else {
+				return null;
 			}
-			// Localizar a su anterior
-			// y devolvemos su jugada anterior
-            return jugadores.get(jugadores.indexOf(target) - 1).getUltimaJugada();
         }
     }
 }
