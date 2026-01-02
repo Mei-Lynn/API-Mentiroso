@@ -15,26 +15,13 @@ public class Partida {
 	private Boolean aceptaJugadores;
 
 	public Partida() {
-		int contador = 0;
-		for (int i = 0; i < 4; i++) {
-			for (int f = 1; f <= 13; f++) {
-				baraja.set(contador, f);
-				contador++;
-			}
-		}
-
+		llenarBaraja();	
 	}
 
 	public Partida(UUID idSala, ArrayList<Jugador> jugadores, Jugador jugadorActual) {
 		super();
 		this.idSala = idSala;
-		int contador = 0;
-		for (int i = 0; i < 4; i++) {
-			for (int f = 1; f <= 13; f++) {
-				this.baraja.set(contador, f);
-				contador++;
-			}
-		}
+		llenarBaraja();	
 		this.jugadores = jugadores;
 		this.jugadorActual = jugadorActual;
 		this.aceptaJugadores = true;
@@ -44,23 +31,19 @@ public class Partida {
 		jugadores.add(jugador);
 		jugadorActual = jugador;
 		aceptaJugadores = true;
-		int contador = 0;
-		for (int i = 0; i < 4; i++) {
-			for (int f = 1; f <= 13; f++) {
-				baraja.set(contador, f);
-				contador++;
-			}
-		}
+		llenarBaraja();	
 	}
 
 	public Partida(UUID id) {
 		this.idSala = id;
 		this.aceptaJugadores = true;
-		int contador = 0;
-		for (int i = 0; i < 4; i++) {
-			for (int f = 1; f <= 13; f++) {
-				baraja.set(contador, f);
-				contador++;
+		llenarBaraja();	
+	}
+
+	private void llenarBaraja() {
+		for (int f = 1; f <= 13; f++) {
+			for (int i = 0; i < 4; i++) {
+				baraja.add(f);
 			}
 		}
 	}
