@@ -1,6 +1,6 @@
 Clases Servidor:
 - Main
-	. Partidas [List(Partida)]
+	. Partidas [Map(UUID, Partida)]
 	- Partida		
 		* ID [UUID]
 		* Baraja [List(Int)]
@@ -15,7 +15,16 @@ Clases Servidor:
 				+ CartasJugadas [List(Int)] //Cartas reales jugadas
 				+ Nombre [String] //Ej.: Pareja, Full...
 				+ Numero1 [Int] // Para todas las manos
-				+ Numero2 [Int] // Para full house y doble pareja
+				+ Numero2 [Int] // Para full house y doble pareja\
+  				-> Métodos:
+	  				+ Getters y Setters de los atributos
+   					+ jugadaElegida (String nombreJugada) : Jugada.
+      				+ comprobarCartaAlata (int numero) : boolean.
+          			+ comprobarPareja (int numero) : boolean.
+            		+ comprobarTrio (int numero) : boolean.
+           			+ comprobarDoblePareja (int numero1, int numero2) : boolean.
+           			+ comprobarFull (int numero1, int numero2) : boolean.
+ 					+ comprobarPoker (int numero) : boolean.
 		* JugadorActual [Jugador]
   		* AceptaJugadores [Boolean] //Atributo calculado
 
@@ -43,7 +52,8 @@ API:
 	- Provee:
 		+ La jugada anterior
 	- Recibe:
-		+ Respuesta si el jugador cree que la jugada es mentira
+		+ El jugador que la solicita
+		+ La ID de la sala del jugador
 
 - Endpoint 4 "Subir Mano":
 	- Provee:
