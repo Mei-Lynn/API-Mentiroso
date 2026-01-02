@@ -53,42 +53,33 @@ public class Jugada {
 	}
 
 	public Jugada jugadaElegida(String nombreJugada) {
-		Jugada jugada = new Jugada();
 		switch (nombreJugada) {
 		case "Carta Alta":
-			jugada.setNombre(nombreJugada);
-			jugada.setPrimerNumero(primerNumero);
-			jugada.setEsVerdad(comprobarCartaAlta(primerNumero));
+			this.setNombre(nombreJugada);
+			this.setEsVerdad(comprobarCartaAlta(primerNumero));
 			break;
 		case "Pareja":
-			jugada.setNombre(nombreJugada);
-			jugada.setPrimerNumero(primerNumero);
-			jugada.setEsVerdad(comprobarPareja(primerNumero));
+			this.setNombre(nombreJugada);
+			this.setEsVerdad(comprobarPareja(primerNumero));
 			break;
 		case "Trio":
-			jugada.setNombre(nombreJugada);
-			jugada.setPrimerNumero(primerNumero);
-			jugada.setEsVerdad(comprobarTrio(primerNumero));
+			this.setNombre(nombreJugada);
+			this.setEsVerdad(comprobarTrio(primerNumero));
 			break;
 		case "Doble Pareja":
-			jugada.setNombre(nombreJugada);
-			jugada.setPrimerNumero(primerNumero);
-			jugada.setSegundoNumero(segundoNumero);
-			jugada.setEsVerdad(comprobarDoblePareja(primerNumero, segundoNumero));
+			this.setNombre(nombreJugada);
+			this.setEsVerdad(comprobarDoblePareja(primerNumero, segundoNumero));
 			break;
 		case "Full":
-			jugada.setNombre(nombreJugada);
-			jugada.setPrimerNumero(primerNumero);
-			jugada.setSegundoNumero(segundoNumero);
-			jugada.setEsVerdad(comprobarFull(primerNumero, segundoNumero));
+			this.setNombre(nombreJugada);
+			this.setEsVerdad(comprobarFull(primerNumero, segundoNumero));
 			break;
 		case "Poker":
-			jugada.setNombre(nombreJugada);
-			jugada.setPrimerNumero(primerNumero);
-			jugada.setEsVerdad(comprobarPoker(primerNumero));
+			this.setNombre(nombreJugada);
+			this.setEsVerdad(comprobarPoker(primerNumero));
 			break;
 		}
-		return jugada;
+		return this;
 
 	}
 
