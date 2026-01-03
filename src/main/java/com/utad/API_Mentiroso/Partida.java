@@ -98,7 +98,7 @@ public class Partida {
 
 	public void eliminarJugador(Jugador jugador) {
 		jugadores.remove(jugador);
-
+		aceptaJugadores = false;
 	}
 
 	public Jugador findPlayerByUsername(String usr) {
