@@ -98,7 +98,7 @@ public class MentirosoClient {
             String url = BASE_URL + "/anterior?gameID=" + currentSalaID + "&username=" + myUsername;
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
+            System.out.println(url);
             System.out.println("La última jugada fue: " + response.body());
         } catch (Exception e) {
             System.err.println("Error al consultar jugada: " + e.getMessage());
@@ -118,7 +118,7 @@ public class MentirosoClient {
                     BASE_URL, currentSalaID, myUsername, play.replace(" ", "%20"), n1, n2);
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
+            System.out.println(url);
             System.out.println("Servidor dice: " + response.body());
         } catch (Exception e) {
             System.err.println("Error al subir mano: " + e.getMessage());

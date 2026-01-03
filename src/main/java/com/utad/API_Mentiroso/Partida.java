@@ -9,135 +9,145 @@ import java.util.Random;
 import java.util.UUID;
 
 public class Partida {
-	private UUID idSala = UUID.randomUUID();
-	private ArrayList<Integer> baraja = new ArrayList<>();
-	private ArrayList<Jugador> jugadores = new ArrayList<>();
-	private Jugador jugadorActual;
-	private Boolean aceptaJugadores;
 
-	public Partida() {
-		llenarBaraja();
-	}
+    private UUID idSala = UUID.randomUUID();
+    private ArrayList<Integer> baraja = new ArrayList<>();
+    private ArrayList<Jugador> jugadores = new ArrayList<>();
+    private Jugador jugadorActual;
+    private Boolean aceptaJugadores;
 
-	public Partida(UUID idSala, ArrayList<Jugador> jugadores, Jugador jugadorActual) {
-		super();
-		this.idSala = idSala;
-		llenarBaraja();
-		this.jugadores = jugadores;
-		this.jugadorActual = jugadorActual;
-		this.aceptaJugadores = true;
-	}
+    public Partida() {
+        llenarBaraja();
+    }
 
-	public Partida(Jugador jugador) {
-		jugadores.add(jugador);
-		jugadorActual = jugador;
-		aceptaJugadores = true;
-		llenarBaraja();
-	}
+    public Partida(UUID idSala, ArrayList<Jugador> jugadores, Jugador jugadorActual) {
+        super();
+        this.idSala = idSala;
+        llenarBaraja();
+        this.jugadores = jugadores;
+        this.jugadorActual = jugadorActual;
+        this.aceptaJugadores = true;
+    }
 
-	public Partida(UUID id) {
-		this.idSala = id;
-		this.aceptaJugadores = true;
-		llenarBaraja();
-	}
+    public Partida(Jugador jugador) {
+        jugadores.add(jugador);
+        jugadorActual = jugador;
+        aceptaJugadores = true;
+        llenarBaraja();
+    }
 
-	private void llenarBaraja() {
-		for (int f = 1; f <= 13; f++) {
-			for (int i = 0; i < 4; i++) {
-				baraja.add(f);
-			}
-		}
-	}
+    public Partida(UUID id) {
+        this.idSala = id;
+        this.aceptaJugadores = true;
+        llenarBaraja();
+    }
 
-	public UUID getIdSala() {
-		return idSala;
-	}
+    private void llenarBaraja() {
+        for (int f = 1; f <= 13; f++) {
+            for (int i = 0; i < 4; i++) {
+                baraja.add(f);
+            }
+        }
+    }
 
-	public void setIdSala(UUID idSala) {
-		this.idSala = idSala;
-	}
+    public UUID getIdSala() {
+        return idSala;
+    }
 
-	public ArrayList<Integer> getBaraja() {
-		return baraja;
-	}
+    public void setIdSala(UUID idSala) {
+        this.idSala = idSala;
+    }
 
-	public void setBaraja(ArrayList<Integer> baraja) {
-		this.baraja = baraja;
-	}
+    public ArrayList<Integer> getBaraja() {
+        return baraja;
+    }
 
-	public ArrayList<Jugador> getJugadores() {
-		return jugadores;
-	}
+    public void setBaraja(ArrayList<Integer> baraja) {
+        this.baraja = baraja;
+    }
 
-	public void setJugadores(ArrayList<Jugador> jugadores) {
-		this.jugadores = jugadores;
-	}
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
 
-	public Jugador getJugadorActual() {
-		return jugadorActual;
-	}
+    public void setJugadores(ArrayList<Jugador> jugadores) {
+        this.jugadores = jugadores;
+    }
 
-	public void setJugadorActual(Jugador jugadorActual) {
-		this.jugadorActual = jugadorActual;
-	}
+    public Jugador getJugadorActual() {
+        return jugadorActual;
+    }
 
-	public Boolean getAceptaJugadores() {
-		return aceptaJugadores;
-	}
+    public void setJugadorActual(Jugador jugadorActual) {
+        this.jugadorActual = jugadorActual;
+    }
 
-	public void setAceptaJugadores(Boolean aceptaJugadores) {
-		this.aceptaJugadores = aceptaJugadores;
-	}
+    public Boolean getAceptaJugadores() {
+        return aceptaJugadores;
+    }
 
-	public void anadirJugador(Jugador jugador) {
-		jugadores.add(jugador);
-		if (jugadorActual == null) {
-			jugadorActual = jugador;
-		}
-	}
+    public void setAceptaJugadores(Boolean aceptaJugadores) {
+        this.aceptaJugadores = aceptaJugadores;
+    }
 
-	public void eliminarJugador(Jugador jugador) {
-		jugadores.remove(jugador);
-		aceptaJugadores = false;
-	}
+    public void anadirJugador(Jugador jugador) {
+        jugadores.add(jugador);
+        if (jugadorActual == null) {
+            jugadorActual = jugador;
+        }
+    }
 
-	public Jugador findPlayerByUsername(String usr) {
-		for (Jugador jugador : jugadores) {
-			if (jugador.getNombre().equals(usr)) {
-				return jugador;
-			}
-		}
-		return null;
-	}
+    public void eliminarJugador(Jugador jugador) {
+        if (jugadorActual == jugador) {
+            try {
+                jugadorActual = jugadores.get(jugadores.indexOf(jugador) + 1);
+            } catch (IndexOutOfBoundsException e) {
 
-	public Boolean subirJugada(Jugador player, Jugada jugada) {
-		jugadores.get(jugadores.indexOf(player)).jugar(jugada);
-		try {
-			jugadorActual = jugadores.get(jugadores.indexOf(player) + 1);
-		} catch (IndexOutOfBoundsException e) {
-			aceptaJugadores = false;
-			jugadorActual = jugadores.get(0);
-		}
-		return true;
-	}
+                jugadorActual = jugadores.get(0);
+            }
+        }
 
-	public ArrayList<Integer> pedirMano() {
-		Random rng = new Random();
-		ArrayList<Integer> mano = new ArrayList<Integer>();
-		if (baraja.size() > 4) {
-			for (int i = 0; i < 5; i++) {
-				int numeroAleatorio = rng.nextInt(baraja.size() - 1);
-				mano.add(baraja.get(numeroAleatorio));
-				baraja.remove(mano.get(i));
-			}
-			return mano;
-		} else {
-			return null;
-		}
+        jugadores.remove(jugador);
+        aceptaJugadores = false;
+    }
 
-	}
+    public Jugador findPlayerByUsername(String usr) {
+        for (Jugador jugador : jugadores) {
+            if (jugador.getNombre().equals(usr)) {
+                return jugador;
+            }
+        }
+        return null;
+    }
 
-	public boolean estaLlena() {
-		return (jugadores.size() >= 10);
-	}
+    public Boolean subirJugada(Jugador player, Jugada jugada) {
+        jugadores.get(jugadores.indexOf(player)).jugar(jugada);
+        try {
+            jugadorActual = jugadores.get(jugadores.indexOf(player) + 1);
+        } catch (IndexOutOfBoundsException e) {
+            aceptaJugadores = false;
+            jugadorActual = jugadores.get(0);
+        }
+        return true;
+    }
+
+    public ArrayList<Integer> pedirMano() {
+        Random rng = new Random();
+        ArrayList<Integer> mano = new ArrayList<Integer>();
+        if (baraja.size() > 4) {
+            for (int i = 0; i < 5; i++) {
+                int numeroAleatorio = rng.nextInt(baraja.size() - 1);
+                mano.add(baraja.get(numeroAleatorio));
+                baraja.remove(mano.get(i));
+            }
+            return mano;
+        } else {
+            return null;
+        }
+
+    }
+
+    public boolean estaLlena() {
+        return (jugadores.size() >= 10);
+    }
 }
