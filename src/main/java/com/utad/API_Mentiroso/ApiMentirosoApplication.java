@@ -188,7 +188,7 @@ public class ApiMentirosoApplication {
                 Partida myGame = partidas.get(UUID.fromString(gameID));
                 Jugador player = myGame.findPlayerByUsername(name);
                 Jugador anterior = jugadorAnterior(gameID, name);
-                
+
                 if (myGame.getJugadores().contains(player)) {
                     if (myGame.getJugadores().size() > 1) {
                         if (myGame.getJugadorActual() == player) {
@@ -197,7 +197,7 @@ public class ApiMentirosoApplication {
 
                             } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
                                 myGame.eliminarJugador(player);
-                                return "Estas eliminado";
+                                return "Estás eliminad@";
                             }
 
                             if (myGame.getJugadores().size() > 1) {
@@ -231,7 +231,7 @@ public class ApiMentirosoApplication {
                         }
                     }
                 } else {
-                    return "No estas en esta partida";
+                    return "No estás en esta partida";
                 }
             } catch (NullPointerException e) {
                 return "La partida no existe";
