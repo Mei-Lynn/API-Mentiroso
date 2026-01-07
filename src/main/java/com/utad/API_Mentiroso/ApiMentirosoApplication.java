@@ -193,16 +193,18 @@ public class ApiMentirosoApplication {
                     if (myGame.getJugadores().size() > 1) {
                         if (myGame.getJugadorActual() == player) {
                             //Si se intenta levantar la mano, no se subira ninguna
-                            if (anterior.getUltimaJugada() != null && answer.equals("m")) {
-                                if (answer.equals("m") && !anterior.getUltimaJugada().isEsVerdad()) {
-                                    myGame.eliminarJugador(anterior);
-                                    return "Has acertado, sube una mano nueva";
-                                } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
-                                    myGame.eliminarJugador(player);
-                                    return "Estás eliminad@";
+                            if (answer.equals("m")) {
+                                if (anterior.getUltimaJugada() != null) {
+                                    if (!anterior.getUltimaJugada().isEsVerdad()) {
+                                        myGame.eliminarJugador(anterior);
+                                        return "Has acertado, sube una mano nueva";
+                                    } else if (anterior.getUltimaJugada().isEsVerdad()) {
+                                        myGame.eliminarJugador(player);
+                                        return "Estás eliminad@";
+                                    }
+                                } else {
+                                    return "No hay una jugada anterior";
                                 }
-                            } else {
-                                return "No hay una jugada anterior";
                             }
 
                             if (myGame.getJugadores().size() > 1) {
