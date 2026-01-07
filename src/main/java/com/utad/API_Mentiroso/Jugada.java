@@ -1,6 +1,7 @@
 package com.utad.API_Mentiroso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Jugada {
 	private boolean esVerdad;
@@ -8,6 +9,10 @@ public class Jugada {
 	private String nombre;
 	private int primerNumero;
 	private int segundoNumero;
+
+	// Prueba
+	ArrayList<String> listaJugadas = new ArrayList<>(
+			List.of("carta alta", "pareja", "trio", "doble pareja", "full", "poker"));
 
 	public Jugada() {
 	}
@@ -81,6 +86,56 @@ public class Jugada {
 		}
 		return this;
 
+	}
+
+	public boolean esJugadaActualMejorAnterior(Jugada jugadaAnterior, Jugada jugadaSeleccionada) {
+		String nombreJugadaAnterior = jugadaAnterior.getNombre();
+		String nombreJugadaActual = jugadaSeleccionada.getNombre();
+		if (listaJugadas.indexOf(nombreJugadaAnterior) <= listaJugadas.indexOf(nombreJugadaActual)) {
+			// Comprobar en caso de que sea la misma jugada hay que mirar el número de esta
+			if (nombreJugadaActual.equals(nombreJugadaAnterior)) {
+
+				int primerNumeroJugadaAnterior = jugadaAnterior.getPrimerNumero();
+				int segundoNumeroJugadaAnterior = jugadaAnterior.getSegundoNumero();
+				int primerNumeroJugadaActual = jugadaSeleccionada.getPrimerNumero();
+				int segundoNumeroJugadaActual = jugadaSeleccionada.getSegundoNumero();
+
+				if (nombreJugadaActual.equals("full")) {
+					if (primerNumeroJugadaActual < primerNumeroJugadaAnterior) {
+						return false;
+					} else if (primerNumeroJugadaActual == primerNumeroJugadaAnterior) {
+						if (segundoNumeroJugadaActual < segundoNumeroJugadaAnterior)
+							return false;
+						else
+							return true;
+					} else
+						return true;
+				} else {
+					int numeroMasAltoActual = primerNumeroJugadaActual;
+					int numeroMasAltoAnterior = primerNumeroJugadaAnterior;
+
+					if (primerNumeroJugadaActual < segundoNumeroJugadaActual) {
+						numeroMasAltoActual = segundoNumeroJugadaActual;
+						segundoNumeroJugadaActual = primerNumeroJugadaActual;
+					}
+					if (primerNumeroJugadaAnterior < segundoNumeroJugadaAnterior) {
+						numeroMasAltoAnterior = segundoNumeroJugadaActual;
+						segundoNumeroJugadaAnterior = primerNumeroJugadaAnterior;
+					}
+					if (numeroMasAltoActual > numeroMasAltoAnterior) {
+						return true;
+					} else if (numeroMasAltoActual == numeroMasAltoAnterior) {
+						if (segundoNumeroJugadaActual > segundoNumeroJugadaAnterior)
+							return true;
+						else
+							return false;
+					} else
+						return false;
+				}
+			} else
+				return true;
+		}
+		return false;
 	}
 
 	public boolean comprobarCartaAlta(int numero) {
