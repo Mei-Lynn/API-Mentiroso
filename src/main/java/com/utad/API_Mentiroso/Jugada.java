@@ -88,6 +88,13 @@ public class Jugada {
 
 	public boolean esJugadaActualMejorAnterior(Jugada jugadaAnterior) {
 		Jugada jugadaSeleccionada = this;
+
+		if (jugadaSeleccionada.getNombre().equals("full")) {
+			if (jugadaSeleccionada.getPrimerNumero() == jugadaSeleccionada.getSegundoNumero()) {
+				return false;
+			}
+		}
+
 		String nombreJugadaAnterior = jugadaAnterior.getNombre();
 		String nombreJugadaActual = jugadaSeleccionada.getNombre();
 		if (listaJugadas.indexOf(nombreJugadaAnterior) <= listaJugadas.indexOf(nombreJugadaActual)) {
@@ -109,6 +116,7 @@ public class Jugada {
 							return true;
 					} else
 						return true;
+
 				} else {
 					int numeroMasAltoActual = primerNumeroJugadaActual;
 					int numeroMasAltoAnterior = primerNumeroJugadaAnterior;
@@ -118,7 +126,7 @@ public class Jugada {
 						segundoNumeroJugadaActual = primerNumeroJugadaActual;
 					}
 					if (primerNumeroJugadaAnterior < segundoNumeroJugadaAnterior) {
-						numeroMasAltoAnterior = segundoNumeroJugadaActual;
+						numeroMasAltoAnterior = segundoNumeroJugadaAnterior;
 						segundoNumeroJugadaAnterior = primerNumeroJugadaAnterior;
 					}
 					if (numeroMasAltoActual > numeroMasAltoAnterior) {
@@ -137,7 +145,7 @@ public class Jugada {
 		return false;
 	}
 
-	public boolean comprobarCartaAlta(int numero) {
+	private boolean comprobarCartaAlta(int numero) {
 		if (mano.contains(numero)) {
 			this.esVerdad = true;
 		} else
@@ -145,7 +153,7 @@ public class Jugada {
 		return this.esVerdad;
 	}
 
-	public boolean comprobarPareja(int numero) {
+	private boolean comprobarPareja(int numero) {
 		int contador = 0;
 		for (Integer cartas : mano) {
 			if (cartas == numero) {
@@ -160,7 +168,7 @@ public class Jugada {
 		return this.esVerdad;
 	}
 
-	public boolean comprobarTrio(int numero) {
+	private boolean comprobarTrio(int numero) {
 		int contador = 0;
 		for (Integer cartas : mano) {
 			if (cartas == numero) {
@@ -175,7 +183,7 @@ public class Jugada {
 		return this.esVerdad;
 	}
 
-	public boolean comprobarDoblePareja(int numero1, int numero2) {
+	private boolean comprobarDoblePareja(int numero1, int numero2) {
 		int contadorNumero1 = 0;
 		int contadorNumero2 = 0;
 		for (Integer cartas : mano) {
@@ -193,7 +201,7 @@ public class Jugada {
 		return this.esVerdad;
 	}
 
-	public boolean comprobarFull(int numero1, int numero2) {
+	private boolean comprobarFull(int numero1, int numero2) {
 		int contadorNumero1 = 0;
 		int contadorNumero2 = 0;
 		for (Integer cartas : mano) {
@@ -211,7 +219,7 @@ public class Jugada {
 		return this.esVerdad;
 	}
 
-	public boolean comprobarPoker(int numero) {
+	private boolean comprobarPoker(int numero) {
 		int contador = 0;
 		for (Integer cartas : mano) {
 			if (cartas == numero) {
