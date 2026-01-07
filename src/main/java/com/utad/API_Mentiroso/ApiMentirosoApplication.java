@@ -6,12 +6,14 @@ import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
+@CrossOrigin(origins = "*")
 public class ApiMentirosoApplication {
 
     UUID idSala = UUID.randomUUID();
@@ -186,41 +188,50 @@ public class ApiMentirosoApplication {
                 Partida myGame = partidas.get(UUID.fromString(gameID));
                 Jugador player = myGame.findPlayerByUsername(name);
                 Jugador anterior = jugadorAnterior(gameID, name);
-                if (myGame.getJugadores().size() > 1) {
-                    if (myGame.getJugadorActual() == player) {
-                        if (answer.equals("m") && !anterior.getUltimaJugada().isEsVerdad()) {
-                            myGame.eliminarJugador(anterior);
 
-                        } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
-                            myGame.eliminarJugador(player);
-                            return "Estas eliminado";
-                        }
+                if (myGame.getJugadores().contains(player)) {
+                    if (myGame.getJugadores().size() > 1) {
+                        if (myGame.getJugadorActual() == player) {
+                            if (answer.equals("m") && !anterior.getUltimaJugada().isEsVerdad()) {
+                                myGame.eliminarJugador(anterior);
 
-                        if (myGame.getJugadores().size() > 1) {
-                            ArrayList<Integer> hand = player.getMano();
-
-                            Jugada jugada = new Jugada();
-                            jugada.setCartasJugadas(hand);
-                            try {
-                                jugada.setPrimerNumero(Integer.parseInt(n1));
-                                jugada.setSegundoNumero(Integer.parseInt(n2));
-                            } catch (NumberFormatException e) {
-                                return "Error de entrada en las cartas";
+                            } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
+                                myGame.eliminarJugador(player);
+                                return "Estás eliminad@";
                             }
-                            jugada.jugadaElegida(play);
 
-                            myGame.subirJugada(player, jugada);
+                            if (myGame.getJugadores().size() > 1) {
+                                ArrayList<Integer> hand = player.getMano();
 
-                            return "Mano subida";
+                                Jugada jugada = new Jugada();
+                                jugada.setCartasJugadas(hand);
+                                try {
+                                    jugada.setPrimerNumero(Integer.parseInt(n1));
+                                    jugada.setSegundoNumero(Integer.parseInt(n2));
+                                } catch (NumberFormatException e) {
+                                    return "Error de entrada en las cartas";
+                                }
+                                jugada.jugadaElegida(play);
+
+                                myGame.subirJugada(player, jugada);
+
+                                return "Mano subida";
+                            } else {
+                                return "Has ganado!";
+                            }
+
                         } else {
-                            return "Has ganado";
+                            return "No es el turno de este jugador";
                         }
-
                     } else {
-                        return "No es el turno de este jugador";
+                        if (myGame.getAceptaJugadores()) {
+                            return "Espera a que otros jugadores se unan";
+                        } else {
+                            return "Has ganado!";
+                        }
                     }
                 } else {
-                    return "Espera a que otros jugadores se unan";
+                    return "No estás en esta partida";
                 }
             } catch (NullPointerException e) {
                 return "La partida no existe";
