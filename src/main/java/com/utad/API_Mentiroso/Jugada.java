@@ -9,9 +9,7 @@ public class Jugada {
 	private String nombre;
 	private int primerNumero;
 	private int segundoNumero;
-
-	// Prueba
-	ArrayList<String> listaJugadas = new ArrayList<>(
+	private ArrayList<String> listaJugadas = new ArrayList<>(
 			List.of("carta alta", "pareja", "trio", "doble pareja", "full", "poker"));
 
 	public Jugada() {
@@ -88,7 +86,8 @@ public class Jugada {
 
 	}
 
-	public boolean esJugadaActualMejorAnterior(Jugada jugadaAnterior, Jugada jugadaSeleccionada) {
+	public boolean esJugadaActualMejorAnterior(Jugada jugadaAnterior) {
+		Jugada jugadaSeleccionada = this;
 		String nombreJugadaAnterior = jugadaAnterior.getNombre();
 		String nombreJugadaActual = jugadaSeleccionada.getNombre();
 		if (listaJugadas.indexOf(nombreJugadaAnterior) <= listaJugadas.indexOf(nombreJugadaActual)) {

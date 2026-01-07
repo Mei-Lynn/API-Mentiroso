@@ -192,12 +192,17 @@ public class ApiMentirosoApplication {
                 if (myGame.getJugadores().contains(player)) {
                     if (myGame.getJugadores().size() > 1) {
                         if (myGame.getJugadorActual() == player) {
-                            if (answer.equals("m") && !anterior.getUltimaJugada().isEsVerdad()) {
-                                myGame.eliminarJugador(anterior);
-
-                            } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
-                                myGame.eliminarJugador(player);
-                                return "Estás eliminad@";
+                            //Si se intenta levantar la mano, no se subira ninguna
+                            if (anterior.getUltimaJugada() != null && answer.equals("m")) {
+                                if (answer.equals("m") && !anterior.getUltimaJugada().isEsVerdad()) {
+                                    myGame.eliminarJugador(anterior);
+                                    return "Has acertado, sube una mano nueva";
+                                } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
+                                    myGame.eliminarJugador(player);
+                                    return "Estás eliminad@";
+                                }
+                            } else {
+                                return "No hay una jugada anterior";
                             }
 
                             if (myGame.getJugadores().size() > 1) {
@@ -213,9 +218,17 @@ public class ApiMentirosoApplication {
                                 }
                                 jugada.jugadaElegida(play);
 
-                                myGame.subirJugada(player, jugada);
-
-                                return "Mano subida";
+                                if (anterior.getUltimaJugada() != null) {
+                                    if (jugada.esJugadaActualMejorAnterior(anterior.getUltimaJugada())) {
+                                        myGame.subirJugada(player, jugada);
+                                        return "Mano subida";
+                                    } else {
+                                        return "No puedes subir una jugada menor a la anterior";
+                                    }
+                                } else {
+                                    myGame.subirJugada(player, jugada);
+                                    return "Mano subida";
+                                }
                             } else {
                                 return "Has ganado!";
                             }

@@ -102,11 +102,12 @@ public class Partida {
             try {
                 jugadorActual = jugadores.get(jugadores.indexOf(jugador) + 1);
             } catch (IndexOutOfBoundsException e) {
-
                 jugadorActual = jugadores.get(0);
             }
         }
-
+        for (Jugador player : jugadores) {
+            player.setUltimaJugada(null);
+        }
         jugadores.remove(jugador);
         aceptaJugadores = false;
     }
