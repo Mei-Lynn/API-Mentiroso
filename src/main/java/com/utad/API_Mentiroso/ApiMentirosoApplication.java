@@ -197,7 +197,13 @@ public class ApiMentirosoApplication {
                                 if (anterior.getUltimaJugada() != null) {
                                     if (!anterior.getUltimaJugada().isEsVerdad()) {
                                         myGame.eliminarJugador(anterior);
-                                        return "Has acertado, sube una mano nueva";
+
+                                        if (myGame.getJugadores().size() > 1) {
+                                            return "Has acertado, sube una mano nueva";
+                                        } else {
+                                            return "Has ganado!";
+                                        }
+                                        
                                     } else if (anterior.getUltimaJugada().isEsVerdad()) {
                                         myGame.eliminarJugador(player);
                                         return "Estás eliminad@";
