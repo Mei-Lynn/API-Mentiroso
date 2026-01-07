@@ -100,6 +100,9 @@ public class Jugada {
 				int segundoNumeroJugadaActual = jugadaSeleccionada.getSegundoNumero();
 
 				if (nombreJugadaActual.equals("full")) {
+					if (primerNumeroJugadaActual == segundoNumeroJugadaActual) {
+						return false;
+					}
 					if (primerNumeroJugadaActual < primerNumeroJugadaAnterior) {
 						return false;
 					} else if (primerNumeroJugadaActual == primerNumeroJugadaAnterior) {
@@ -109,6 +112,7 @@ public class Jugada {
 							return true;
 					} else
 						return true;
+
 				} else {
 					int numeroMasAltoActual = primerNumeroJugadaActual;
 					int numeroMasAltoAnterior = primerNumeroJugadaAnterior;
@@ -118,7 +122,7 @@ public class Jugada {
 						segundoNumeroJugadaActual = primerNumeroJugadaActual;
 					}
 					if (primerNumeroJugadaAnterior < segundoNumeroJugadaAnterior) {
-						numeroMasAltoAnterior = segundoNumeroJugadaActual;
+						numeroMasAltoAnterior = segundoNumeroJugadaAnterior;
 						segundoNumeroJugadaAnterior = primerNumeroJugadaAnterior;
 					}
 					if (numeroMasAltoActual > numeroMasAltoAnterior) {
