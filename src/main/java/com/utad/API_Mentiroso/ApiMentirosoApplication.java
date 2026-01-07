@@ -6,12 +6,14 @@ import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
+@CrossOrigin(origins="*")
 public class ApiMentirosoApplication {
 
     UUID idSala = UUID.randomUUID();
@@ -213,14 +215,22 @@ public class ApiMentirosoApplication {
 
                             return "Mano subida";
                         } else {
-                            return "Has ganado";
+                            return "Has ganado!";
                         }
 
                     } else {
-                        return "No es el turno de este jugador";
+                        if (myGame.getJugadores().contains(player)) {
+                            return "No es el turno de este jugador";
+                        } else {
+                            return "No estas en esta partida";
+                        }
                     }
                 } else {
-                    return "Espera a que otros jugadores se unan";
+                    if (myGame.getAceptaJugadores()) {
+                        return "Espera a que otros jugadores se unan";
+                    } else {
+                        return "Has ganado!";
+                    }
                 }
             } catch (NullPointerException e) {
                 return "La partida no existe";
