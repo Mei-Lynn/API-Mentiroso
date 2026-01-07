@@ -49,6 +49,9 @@ public class ApiMentirosoApplication {
         response.put("salaID", salaID.toString());
         response.put("mano", jugador.getMano());
 
+        partidas.keySet().forEach((uuid) -> {
+            System.out.println("Partida encontrada: " + uuid);
+        });
         return response;
     }
 
@@ -65,22 +68,38 @@ public class ApiMentirosoApplication {
 
         // No existe la partida
         if (partida == null || partida.estaLlena()) {
-            response.put("ok", false);
+            response.put("partida", false);
             return response;
         }
 
-        // Crear jugador
-        Jugador jugador = new Jugador(username);
-        ArrayList<Integer> newHand = partida.pedirMano();
-        if (newHand == null) {
-            jugador.setMano(newHand);
+        if (partida.getAceptaJugadores()) {
+            // Encontrar al jugador dado
+            ArrayList<Jugador> jugadores = partida.getJugadores();
+            Jugador jugador = partida.findPlayerByUsername(username);
+
+            if (jugador == null) {
+                // Crear jugador
+                jugador = new Jugador(username);
+                ArrayList<Integer> newHand = partida.pedirMano();
+                if (newHand != null) {
+                    jugador.setMano(newHand);
+                    // Añadir a la partida
+                    partida.anadirJugador(jugador);
+                    response.put("partida", true);
+                    response.put("mano", jugador.getMano());
+                } else {
+                    response.put("partida", true);
+                    response.put("mano", null);
+                }
+            } else {
+                response.put("partida", true);
+                response.put("error", "Jugador ya existente");
+            }
+
+        } else {
+            response.put("partida", true);
+            response.put("error", "La partida no acepta nuevos jugadores");
         }
-
-        // Añadir a la partida
-        partida.anadirJugador(jugador);
-
-        response.put("ok", true);
-        response.put("mano", jugador.getMano());
 
         return response;
     }
@@ -93,7 +112,7 @@ public class ApiMentirosoApplication {
      *
      * @return
      */
-	@GetMapping("/anterior")
+    @GetMapping("/anterior")
     public Jugada JugadaAnterior(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name
@@ -102,66 +121,110 @@ public class ApiMentirosoApplication {
         if (name.isEmpty() || gameID.isEmpty()) {
             return null;
         } else {
-            Partida myGame = partidas.get(UUID.fromString(name));
+            try {
+                Partida myGame = partidas.get(UUID.fromString(gameID));
 
-            // Encontrar al jugador dado
-            ArrayList<Jugador> jugadores = myGame.getJugadores();
-            Jugador target = myGame.findPlayerByUsername(name);
+                Jugador anterior = jugadorAnterior(gameID, name);
 
-            if (target != null) {
-                // Localizar a su anterior
-                // y devolvemos su jugada anterior
-                try {
-                    return jugadores.get(jugadores.indexOf(target) - 1).getUltimaJugada();
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    return jugadores.get(jugadores.size()).getUltimaJugada();
+                if (anterior != null) {
+                    return anterior.getUltimaJugada();
+                } else {
+                    return null;
                 }
-            } else {
+            } catch (NullPointerException e) {
                 return null;
             }
+        }
+    }
+
+    private Jugador jugadorAnterior(String gameID, String name) throws NullPointerException {
+        Partida myGame = partidas.get(UUID.fromString(gameID));
+
+        // Encontrar al jugador dado
+        ArrayList<Jugador> jugadores = myGame.getJugadores();
+        Jugador target = myGame.findPlayerByUsername(name);
+
+        if (target != null) {
+            // Localizar a su anterior
+            // y devolvemos su jugada anterior
+            try {
+                return jugadores.get(jugadores.indexOf(target) - 1);
+            } catch (IndexOutOfBoundsException e) {
+                return jugadores.get(jugadores.size() - 1);
+            }
+        } else {
+            return null;
         }
     }
 
     /**
      * Endpoint 4: Subir mano Recibe... - ID de la partida - el nombre del
      * jugador - el nombre de la jugada - el primer numero de la jugada
-     * (obligatorio) - el segundo numero de la jugada (opcional)
+     * (obligatorio) - el segundo numero de la jugada (opcional) - v/m
+     * [verdad/mentira] como respuesta a la jugada anterior
      *
      * devuelve un mensaje de texto con el resultado
      */
-	@GetMapping("/subir")	
+    @GetMapping("/subir")
     public String subirMano(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name,
             @RequestParam(value = "play", defaultValue = "") String play,
             @RequestParam(value = "n1", defaultValue = "") String n1,
-            @RequestParam(value = "n2", defaultValue = "0") String n2
+            @RequestParam(value = "n2", defaultValue = "0") String n2,
+            @RequestParam(value = "respuesta", defaultValue = "v") String answer
     ) {
+        System.out.println("Peticion de subir mano recibida:");
+        System.out.println("ID: " + gameID);
+        System.out.println("USR: " + name);
+        System.out.println(play + " de " + n1 + " " + n2);
+
         if (name.isEmpty() || gameID.isEmpty()) {
-            return "Error de entrada";
+            return "Error de entrada [Partida/Usuario]";
         } else {
-            Partida myGame = partidas.get(UUID.fromString(name));
-            Jugador target = myGame.findPlayerByUsername(name);
+            try {
+                Partida myGame = partidas.get(UUID.fromString(gameID));
+                Jugador player = myGame.findPlayerByUsername(name);
+                Jugador anterior = jugadorAnterior(gameID, name);
+                if (myGame.getJugadores().size() > 1) {
+                    if (myGame.getJugadorActual() == player) {
+                        if (answer.equals("m") && !anterior.getUltimaJugada().isEsVerdad()) {
+                            myGame.eliminarJugador(anterior);
 
-            if (myGame.getJugadorActual() == target) {
-                // Encontrar al jugador dado
-                ArrayList<Integer> hand = target.getMano();
+                        } else if (answer.equals("m") && anterior.getUltimaJugada().isEsVerdad()) {
+                            myGame.eliminarJugador(player);
+                            return "Estas eliminado";
+                        }
 
-                Jugada jugada = new Jugada();
-                try {
-                    jugada.setPrimerNumero(Integer.parseInt(n1));
-                    jugada.setSegundoNumero(Integer.parseInt(n2));
-                } catch (NumberFormatException e) {
-                    return "Error de entrada";
+                        if (myGame.getJugadores().size() > 1) {
+                            ArrayList<Integer> hand = player.getMano();
+
+                            Jugada jugada = new Jugada();
+                            jugada.setCartasJugadas(hand);
+                            try {
+                                jugada.setPrimerNumero(Integer.parseInt(n1));
+                                jugada.setSegundoNumero(Integer.parseInt(n2));
+                            } catch (NumberFormatException e) {
+                                return "Error de entrada en las cartas";
+                            }
+                            jugada.jugadaElegida(play);
+
+                            myGame.subirJugada(player, jugada);
+
+                            return "Mano subida";
+                        } else {
+                            return "Has ganado";
+                        }
+
+                    } else {
+                        return "No es el turno de este jugador";
+                    }
+                } else {
+                    return "Espera a que otros jugadores se unan";
                 }
-                jugada.jugadaElegida(play);
-
-                return "Mano subida";
-
-            } else {
-                return "No es el turno de este jugador";
+            } catch (NullPointerException e) {
+                return "La partida no existe";
             }
         }
-        //return false;
     }
 }
