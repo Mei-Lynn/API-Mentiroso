@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acceso host</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="mainContainer">
+      <h1>Crear partida</h1>
+      <div class="formContainer">
+        <form id="hostForm">
+          <label for="hostName">Nombre</label>
+          <input type="text" id="hostName" name="hostName" required />
+          <button class="formButton" type="submit">Crear</button>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script>
+    document
+      .getElementById("hostForm")
+      .addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const hostName = document.getElementById("hostName").value;
+
+        // Llamamos al backend
+        const response = await fetch(
+          `http://10.1.201.227:8080/crear?username=${hostName}`
+        );
+        const data = await response.json();
+
+        console.log("Partida creada:", data);
+
+        // Guardamos datos en localStorage para usarlos en el juego
+        localStorage.setItem("gameID", data.salaID);
+        localStorage.setItem("username", hostName);
+        localStorage.setItem("hand", JSON.stringify(data.mano));
+
+        // Redirigimos al juego
+        window.location.href = "game.html";
+      });
+  </script>
+</html>
