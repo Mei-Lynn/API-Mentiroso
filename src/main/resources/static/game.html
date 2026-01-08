@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentiroso</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div id="gameIDDisplay"></div>
+    <div class="mainContainer">
+      <h1>Mentiroso</h1>
+
+      <h2 id="playerNameLabel"></h2>
+
+      <div class="formContainer">
+        <h3>Tu mano:</h3>
+        <div id="handContainer" class="cardsContainer"></div>
+      </div>
+
+      <div class="actionsContainer">
+        <h3 id="previousPlayLabel">Jugada anterior: ninguna</h3>
+
+        <div id="previousPlayCard" class="card" style="display: none">
+          <p class="cardTitle" id="prevPlayName"></p>
+          <p class="cardDesc" id="prevPlayNumbers"></p>
+        </div>
+
+        <h3>Elige tu jugada:</h3>
+
+        <div class="cardsContainer">
+          <div class="card" onclick="selectPlay('carta alta',1)">
+            <p class="cardTitle">Carta Alta</p>
+            <p class="cardDesc">1 número</p>
+          </div>
+
+          <div class="card" onclick="selectPlay('pareja',1)">
+            <p class="cardTitle">Pareja</p>
+            <p class="cardDesc">1 número</p>
+          </div>
+
+          <div class="card" onclick="selectPlay('trio',1)">
+            <p class="cardTitle">Trío</p>
+            <p class="cardDesc">1 número</p>
+          </div>
+
+          <div class="card" onclick="selectPlay('doble pareja',2)">
+            <p class="cardTitle">Doble Pareja</p>
+            <p class="cardDesc">2 números</p>
+          </div>
+
+          <div class="card" onclick="selectPlay('full',2)">
+            <p class="cardTitle">Full</p>
+            <p class="cardDesc">2 números</p>
+          </div>
+
+          <div class="card" onclick="selectPlay('poker',1)">
+            <p class="cardTitle">Póker</p>
+            <p class="cardDesc">1 número</p>
+          </div>
+
+          <!-- MENTIRA -->
+          <div class="card bluffCard" onclick="callBluff()">
+            <p class="cardTitle">MENTIRA</p>
+            <p class="cardDesc">Desafiar jugada</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="numberSelectorContainer"
+        class="actionsContainer"
+        style="display: none"
+      >
+        <h3 id="numberSelectorTitle"></h3>
+        <div id="numberSelectorCards" class="cardsContainer"></div>
+      </div>
+
+      <div id="errorBox" style="display: none" class="errorBox"></div>
+      <div id="popUp"></div>
+    </div>
+
+    <script>
+      const username = localStorage.getItem("username");
+      const gameID = localStorage.getItem("gameID");
+      const hand = JSON.parse(localStorage.getItem("hand"));
+
+      document.getElementById("gameIDDisplay").innerText =
+        "Código de partida: " + gameID;
+
+      document.getElementById("playerNameLabel").innerText =
+        "Jugador: " + username;
+
+      function renderHand() {
+        const cont = document.getElementById("handContainer");
+        cont.innerHTML = "";
+
+        hand.forEach((num) => {
+          let displayValue = num;
+
+          if (num === 1) displayValue = "A";
+          if (num === 11) displayValue = "J";
+          if (num === 12) displayValue = "Q";
+          if (num === 13) displayValue = "K";
+
+          const c = document.createElement("div");
+          c.className = "card";
+          c.innerHTML = `<p class="cardTitle">${displayValue}</p>`;
+          cont.appendChild(c);
+        });
+      }
+
+      renderHand();
+
+      let selectedPlay = null;
+      let requiredNumbers = 0;
+      let chosenNumbers = [];
+
+      // Seleccionar jugada
+      function selectPlay(name, amount) {
+        selectedPlay = name;
+        requiredNumbers = amount;
+        chosenNumbers = [];
+
+        document.getElementById("numberSelectorContainer").style.display =
+          "block";
+        document.getElementById("numberSelectorTitle").innerText =
+          "Elige " + amount + " número(s)";
+
+        const cont = document.getElementById("numberSelectorCards");
+        cont.innerHTML = "";
+
+        const allNumbers = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
+
+        allNumbers.forEach((value, index) => {
+          const c = document.createElement("div");
+          c.className = "card";
+
+          const realNumber = index + 1;
+
+          c.innerHTML = `<p class="cardTitle">${value}</p>`;
+          c.onclick = () => selectNumber(realNumber);
+          cont.appendChild(c);
+        });
+      }
+
+      // Seleccionar número
+      function selectNumber(num) {
+        chosenNumbers.push(num);
+
+        if (chosenNumbers.length === requiredNumbers) {
+          sendPlay(selectedPlay, chosenNumbers[0], chosenNumbers[1] || 0);
+          document.getElementById("numberSelectorContainer").style.display =
+            "none";
+        }
+      }
+
+      // Enviar jugada normal (verdad)
+      async function sendPlay(play, n1, n2) {
+        const res = await fetch(
+          `http://10.1.201.227:8080/subir?gameID=${gameID}&username=${username}&play=${play}&n1=${n1}&n2=${n2}&respuesta=v`
+        );
+
+        const text = await res.text();
+
+        if (
+          text.includes("No es el turno") ||
+          text.includes("eliminado") ||
+          text.includes("Error") ||
+          text.includes("no existe") ||
+          text.includes("Espera")
+        ) {
+          showError(text);
+        } else {
+          hideError();
+        }
+
+        document.getElementById("resultLabel").innerText = text;
+      }
+
+      // Decir mentira
+      async function callBluff() {
+        const res = await fetch(
+          `http://10.1.201.227:8080/subir?gameID=${gameID}&username=${username}&play=ninguna&n1=0&n2=0&respuesta=m`
+        ).catch(() => null);
+
+        if (!res) {
+          document.getElementById("resultLabel").innerText =
+            "Error llamando a mentira.";
+          return;
+        }
+
+        const text = await res.text();
+        showPopUp(text);
+      }
+
+      // Obtener jugada anterior
+      async function fetchPreviousPlay() {
+        const res = await fetch(
+          `http://10.1.201.227:8080/anterior?gameID=${gameID}&username=${username}`
+        ).catch(() => null);
+
+        if (!res) return;
+
+        const text = await res.text();
+        if (!text || text === "null" || text.trim() === "") {
+          document.getElementById("previousPlayLabel").innerText =
+            "Jugada anterior: ninguna";
+          document.getElementById("previousPlayCard").style.display = "none";
+          return;
+        }
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.error("Respuesta no JSON:", text);
+          return;
+        }
+
+        document.getElementById("previousPlayLabel").innerText =
+          "Jugada anterior:";
+
+        document.getElementById("prevPlayName").innerText =
+          data.nombre || "Sin nombre";
+        document.getElementById("prevPlayNumbers").innerText = `${
+          data.primerNumero
+        } ${data.segundoNumero || ""}`;
+
+        document.getElementById("previousPlayCard").style.display = "flex";
+      }
+
+      // Mostrar errores
+      function showError(msg) {
+        const box = document.getElementById("errorBox");
+        box.innerText = msg;
+        box.style.display = "block";
+      }
+
+      // Ocultar errores
+      function hideError() {
+        document.getElementById("errorBox").style.display = "none";
+      }
+
+      // Actualizar cada 2s
+      setInterval(() => {
+        fetchPreviousPlay();
+      }, 2000);
+
+      // Mostrar pop-up con el resultado
+      function showPopUp(text) {
+        const popup = document.getElementById("popUp");
+
+        popup.innerText = text;
+
+        if (text.toLowerCase().includes("ganado")) {
+          popup.className = "win";
+        } else {
+          popup.className = "lose";
+        }
+
+        popup.style.display = "block";
+
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2500);
+      }
+    </script>
+  </body>
+</html>

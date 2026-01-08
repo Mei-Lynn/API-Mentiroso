@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="homeContainer">
+      <h1>Bienvenido al juego del mentiroso</h1>
+      <button id="createButton">Crear</button>
+      <button id="joinButton">Unirse</button>
+    </div>
+  </body>
+  <script>
+    document
+      .getElementById("createButton")
+      .addEventListener("click", function () {
+        window.location.href = "hostAccess.html";
+      });
+
+    document
+      .getElementById("joinButton")
+      .addEventListener("click", function () {
+        window.location.href = "playerAccess.html";
+      });
+  </script>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acceso jugador</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="mainContainer">
+      <h1>Unirse a una partida</h1>
+      <div class="formContainer">
+        <form id="playerForm">
+          <label for="playerName">Nombre</label>
+          <input type="text" id="playerName" name="playerName" required />
+          <br />
+          <label for="gameCode">Código</label>
+          <input type="text" id="gameCode" name="gameCode" required />
+          <br />
+          <button class="formButton" type="submit">Unirse</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("playerForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const playerName = document.getElementById("playerName").value;
+          const gameCode = document.getElementById("gameCode").value;
+
+          const response = await fetch(
+            `http://10.1.201.227:8080/unirse?salaID=${gameCode}&username=${playerName}`
+          );
+
+          const data = await response.json();
+          console.log("Respuesta unirse:", data);
+
+          if (data.partida === false) {
+            alert("La partida no existe o está llena");
+            return;
+          }
+
+          if (data.error) {
+            alert(data.error);
+            return;
+          }
+
+          // Guardamos datos
+          localStorage.setItem("gameID", gameCode);
+          localStorage.setItem("username", playerName);
+          localStorage.setItem("hand", JSON.stringify(data.mano));
+
+          // Redirigimos al juego
+          window.location.href = "game.html";
+        });
+    </script>
+  </body>
+</html>
