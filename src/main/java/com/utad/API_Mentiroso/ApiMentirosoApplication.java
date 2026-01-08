@@ -28,6 +28,7 @@ public class ApiMentirosoApplication {
 
     // Endpoint 1
     @GetMapping("/crear")
+    @CrossOrigin(origins = "*")
     public HashMap<String, Object> crearPartida(@RequestParam(value = "username") String username) {
 
         // Futura respuesta a devolver
@@ -59,6 +60,7 @@ public class ApiMentirosoApplication {
 
     // Endpoint 2
     @GetMapping("/unirse")
+    @CrossOrigin(origins = "*")
     public HashMap<String, Object> unirsePartida(@RequestParam(value = "salaID") String salaID,
             @RequestParam(value = "username") String username) {
 
@@ -115,6 +117,7 @@ public class ApiMentirosoApplication {
      * @return
      */
     @GetMapping("/anterior")
+    @CrossOrigin(origins = "*")
     public Jugada JugadaAnterior(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name
@@ -168,6 +171,7 @@ public class ApiMentirosoApplication {
      * devuelve un mensaje de texto con el resultado
      */
     @GetMapping("/subir")
+    @CrossOrigin(origins = "*")
     public String subirMano(
             @RequestParam(value = "gameID", defaultValue = "") String gameID,
             @RequestParam(value = "username", defaultValue = "") String name,
